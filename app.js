@@ -1,4 +1,4 @@
-const booking="https://waterfront_retreat_direct_booking.guestybookings.com/en";
+const booking="https://waterfront-retreat-direct-booking.guestybookings.com/en";
 const bookingAttrs='target="_blank" rel="noopener noreferrer"';
 const amenities=[
 ["◌","Comfort",["Air conditioning","Heating","Private hot tub","Hot water","Wi-Fi","TV","Bed linens","Hair dryer"]],
