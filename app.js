@@ -45,7 +45,7 @@ if(page){const key=new URLSearchParams(location.search).get("c")||"blue-heron",c
 const bookingModal=document.querySelector("#booking-modal");
 if(bookingModal){
   const closeModal=()=>{bookingModal.hidden=true;document.body.classList.remove("modal-open")};
-  page.querySelectorAll(`a[href="${booking}"]`).forEach(link=>link.addEventListener("click",event=>{event.preventDefault();bookingModal.hidden=false;document.body.classList.add("modal-open");bookingModal.querySelector(".booking-modal-close").focus()}));
+  page.querySelectorAll(`a[href="${booking}"]:not(.booking-continue)`).forEach(link=>link.addEventListener("click",event=>{event.preventDefault();bookingModal.hidden=false;document.body.classList.add("modal-open");bookingModal.querySelector(".booking-modal-close").focus()}));
   bookingModal.querySelector(".booking-modal-close").addEventListener("click",closeModal);
   bookingModal.querySelector(".booking-cancel").addEventListener("click",closeModal);
   bookingModal.addEventListener("click",event=>{if(event.target===bookingModal)closeModal()});
