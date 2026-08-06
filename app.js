@@ -1,4 +1,4 @@
-const booking="https://waterfront-retreat-direct-booking.guestybookings.com/en";
+const booking="https://waterfront-retreat-direct-booking.guestybookings.com/en?minOccupancy=2&adults=2";
 const bookingAttrs='target="_blank" rel="noopener noreferrer"';
 const amenities=[
 ["◌","Comfort",["Air conditioning","Heating","Private hot tub","Hot water","Wi-Fi","TV","Bed linens","Hair dryer"]],
@@ -35,7 +35,7 @@ if(page){const key=new URLSearchParams(location.search).get("c")||"blue-heron",c
       <p><strong>25+</strong><span>Minimum booking age</span></p>
       <p><strong>2 nights</strong><span>Minimum stay</span></p>
     </div>
-    <p class="booking-note">By continuing, you confirm the primary guest is at least 25 years old and your stay is for two nights or longer.</p>
+    <p class="booking-note">By continuing, you confirm the primary guest is at least 25 years old and your stay is for two nights or longer.${key==="eagles-nest"?" Eagle’s Nest is elevated and requires climbing stairs to reach the cabin.":""}</p>
     <div class="booking-modal-actions">
       <button class="btn booking-cancel" type="button">Go back</button>
       <a class="btn gold booking-continue" href="${booking}" ${bookingAttrs}>Continue to availability</a>
