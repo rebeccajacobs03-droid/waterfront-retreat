@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "mkdir -p public && cp index.html cabin.html cabins.html globals.css gallery.css outdoor-gallery.css app.js public/"
+    "build": "mkdir -p public && cp index.html cabin.html cabins.html globals.css gallery.css outdoor-gallery.css app.js public/ && cp -R images public/"
   }
 }
