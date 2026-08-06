@@ -4,7 +4,7 @@ const amenities=[
 ["◌","Comfort",["Air conditioning","Heating","Private hot tub","Hot water","Wi-Fi","TV","Bed linens","Hair dryer"]],
 ["⌂","Kitchen & Dining",["Keurig coffee maker","Coffee","Kitchenette","Mini fridge","Toaster","Cooking basics","Dishes & silverware","Wine glasses","BBQ grill & utensils"]],
 ["≈","Outdoor & Lake",["Waterfront","Lake access","Kayaks","Fire pit","Outdoor shower","Outdoor dining","Outdoor furniture","Private patio or balcony"]],
-["✓","Safety & Essentials",["Private entrance","Private living room","Free parking","Single-level home","Smoke alarm","Carbon monoxide alarm","Fire extinguisher","First aid kit","Board games","Bath essentials"]]
+["✓","Safety & Essentials",["Private entrance","Private living room","Free parking","Single-level home","Smoke alarm","Fire extinguisher","First aid kit","Board games","Bath essentials"]]
 ];
 const cabins={
 "blue-heron":{number:"01",name:"Blue Heron Cabin",card:"images/blue-heron.webp",hero:"images/blue-heron.webp",tagline:"Romantic • Peaceful • Lakeside Adventure",intro:"A warm, intimate lakeside escape for two",copy:"Blue Heron Cabin sits quietly along Pickwick Lake, offering a warm, intimate escape for couples who want both relaxation and a touch of adventure. Mornings begin with soft light over the water, and days can be spent exploring the shoreline, wandering through nature, or simply enjoying the calm from your private porch.",highlight:"Private hot tub and outdoor shower",gallery:["images/blue-heron.webp"]},
@@ -25,4 +25,29 @@ if(page){const key=new URLSearchParams(location.search).get("c")||"blue-heron",c
 <section class="cabin-gallery"><div class="gallery-heading"><div><p class="kicker">Step inside</p><h2>Explore ${c.name}</h2></div><p>Take a closer look at your private cabin and peaceful outdoor spaces.</p></div><div class="gallery-grid">${c.gallery.map((src,i)=>`<figure class="${i===0||i===4?"gallery-feature":""}"><img src="${src}" alt="${c.name}" loading="lazy"></figure>`).join("")}</div></section>
 <section class="amenities amenity-groups"><p class="kicker">Everything you need</p><h2>Cabin amenities</h2><p class="amenity-intro">Select a category to see what is included.</p><div class="amenity-accordion">${amenities.map(g=>`<details class="amenity-drop"><summary><span class="amenity-drop-icon">${g[0]}</span><strong>${g[1]}</strong><span class="amenity-count">${g[2].length} amenities</span><span class="amenity-chevron">⌄</span></summary><ul>${g[2].map(x=>`<li>${x}</li>`).join("")}</ul></details>`).join("")}</div></section>
 <section class="detail-cta"><p class="kicker light">Pickwick Lake is calling</p><h2>Make ${c.name} yours.</h2><p>View live availability and reserve securely through Guesty.</p><div class="actions"><a class="btn gold" href="${booking}" ${bookingAttrs}>Book ${c.name}</a><a class="btn clear" href="cabins.html">Explore other cabins</a></div></section>
-<footer><div class="brand"><b>Waterfront Retreat</b><span>on Pickwick Lake</span></div><p>Private waterfront cabins for couples in Cherokee, Alabama.</p><div class="links"><a href="tel:+12563351827">256-335-1827</a><a href="mailto:info@waterfrontretreatonpickwicklake.com">info@waterfrontretreatonpickwicklake.com</a></div><small>© 2026 Waterfront Retreat on Pickwick Lake</small></footer>`}
+<footer><div class="brand"><b>Waterfront Retreat</b><span>on Pickwick Lake</span></div><p>Private waterfront cabins for couples in Cherokee, Alabama.</p><div class="links"><a href="tel:+12563351827">256-335-1827</a><a href="mailto:info@waterfrontretreatonpickwicklake.com">info@waterfrontretreatonpickwicklake.com</a></div><small>© 2026 Waterfront Retreat on Pickwick Lake</small></footer>
+<div class="booking-modal" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title" hidden>
+  <div class="booking-modal-card">
+    <button class="booking-modal-close" type="button" aria-label="Close booking requirements">×</button>
+    <p class="kicker">Before you book</p>
+    <h2 id="booking-modal-title">A few stay requirements</h2>
+    <div class="booking-requirements">
+      <p><strong>25+</strong><span>Minimum booking age</span></p>
+      <p><strong>2 nights</strong><span>Minimum stay</span></p>
+    </div>
+    <p class="booking-note">By continuing, you confirm the primary guest is at least 25 years old and your stay is for two nights or longer.</p>
+    <div class="booking-modal-actions">
+      <button class="btn booking-cancel" type="button">Go back</button>
+      <a class="btn gold booking-continue" href="${booking}" ${bookingAttrs}>Continue to availability</a>
+    </div>
+  </div>
+</div>`}
+const bookingModal=document.querySelector("#booking-modal");
+if(bookingModal){
+  const closeModal=()=>{bookingModal.hidden=true;document.body.classList.remove("modal-open")};
+  page.querySelectorAll(`a[href="${booking}"]`).forEach(link=>link.addEventListener("click",event=>{event.preventDefault();bookingModal.hidden=false;document.body.classList.add("modal-open");bookingModal.querySelector(".booking-modal-close").focus()}));
+  bookingModal.querySelector(".booking-modal-close").addEventListener("click",closeModal);
+  bookingModal.querySelector(".booking-cancel").addEventListener("click",closeModal);
+  bookingModal.addEventListener("click",event=>{if(event.target===bookingModal)closeModal()});
+  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!bookingModal.hidden)closeModal()});
+}
