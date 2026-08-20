@@ -1,5 +1,5 @@
 const DEFAULT_TO = 'info@waterfrontretreatonpickwicklake.com';
-const DEFAULT_FROM = 'Waterfront Retreat <agreements@mywaterfrontretreat.com>';
+const DEFAULT_FROM = 'Waterfront Retreat <agreements@waterfrontretreatonpickwicklake.com>';
 
 function clean(value, max = 200) {
   return String(value || '').replace(/[\r\n]+/g, ' ').trim().slice(0, max);
