@@ -91,7 +91,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="legal-card thankyou-card" id="thankyou-panel" style="display:none">
 <p class="kicker">You're all set</p>
 <h2>Thanks for signing!</h2>
-<p>Your guest agreement has been recorded. A PDF copy should have started downloading automatically — if it didn't, use the button below.</p>
+<p>Your signed guest agreement has been delivered to Waterfront Retreat. A PDF copy should have started downloading automatically — if it didn't, use the button below.</p>
+<p id="delivery-confirmation" style="font-weight:700"></p>
 <button type="button" id="download-again" class="btn gold">Download your signed copy</button>
 </section>
 
@@ -175,44 +176,77 @@ function downloadPDF(){
 
 document.getElementById('download-again').addEventListener('click', downloadPDF);
 
-document.getElementById('guest-form').addEventListener('submit', function(e){
+async function sendAgreementEmail(payload){
+  let lastError = new Error('Delivery could not be confirmed');
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const response = await fetch('/api/send-agreement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(function(){ return {}; });
+
+      if (response.ok && result.success) return result;
+      lastError = new Error(result.error || 'Delivery could not be confirmed');
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt < 2) {
+      await new Promise(function(resolve){ setTimeout(resolve, 750); });
+    }
+  }
+
+  throw lastError;
+}
+
+document.getElementById('guest-form').addEventListener('submit', async function(e){
   e.preventDefault();
   const form = e.target;
   if (!form.reportValidity()) return;
 
   const submitBtn = form.querySelector('.submit-btn');
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting...';
+  submitBtn.textContent = 'Delivering signed agreement...';
 
-  downloadPDF();
-  const pdfBase64 = lastPDF.output('datauristring').split(',')[1];
-  const guestNames = document.querySelector('[name=guest_names]').value || '';
-  const dateOfStay = document.querySelector('[name=date_of_stay]').value || '';
+  try {
+    downloadPDF();
+    const pdfBase64 = lastPDF.output('datauristring').split(',')[1];
+    const guestNames = document.querySelector('[name=guest_names]').value || '';
+    const dateOfStay = document.querySelector('[name=date_of_stay]').value || '';
 
-  const formspreeSubmit = fetch(form.action, {
-    method: 'POST',
-    body: new FormData(form),
-    headers: { 'Accept': 'application/json' }
-  });
+    const formspreeSubmit = fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function(response){
+      if (!response.ok) console.error('Formspree backup submission failed:', response.status);
+      return response;
+    }).catch(function(error){
+      console.error('Formspree backup submission failed:', error);
+      return null;
+    });
 
-  const emailCopySubmit = fetch('/api/send-agreement', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pdfBase64: pdfBase64, guestNames: guestNames, dateOfStay: dateOfStay })
-  }).catch(function(err){ console.error('Email copy to host failed:', err); });
+    const delivery = await sendAgreementEmail({
+      pdfBase64: pdfBase64,
+      guestNames: guestNames,
+      dateOfStay: dateOfStay
+    });
 
-  Promise.allSettled([formspreeSubmit, emailCopySubmit]).then(function(results){
-    const formspreeResult = results[0];
-    if (formspreeResult.status === 'fulfilled' && formspreeResult.value.ok) {
-      form.style.display = 'none';
-      document.getElementById('thankyou-panel').style.display = 'block';
-      document.getElementById('thankyou-panel').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      alert('Something went wrong submitting your agreement. Your PDF still downloaded - please also call us at 256-335-1827 or email info@waterfrontretreatonpickwicklake.com to confirm.');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit & sign';
-    }
-  });
+    formspreeSubmit.catch(function(){});
+    document.getElementById('delivery-confirmation').textContent =
+      delivery.id ? 'Delivery confirmation: ' + delivery.id : 'Delivery confirmed';
+    form.style.display = 'none';
+    document.getElementById('thankyou-panel').style.display = 'block';
+    document.getElementById('thankyou-panel').scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+    console.error('Signed agreement delivery failed:', error);
+    alert('We could not confirm delivery of your signed agreement. Your PDF has downloaded to your device. Please try submitting again, or email the downloaded PDF to info@waterfrontretreatonpickwicklake.com.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Try submitting again';
+  }
 });
 </script>
 </body></html>
