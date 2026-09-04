@@ -33,9 +33,10 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Email service is not configured' });
     }
 
-    const { pdfBase64, guestNames, dateOfStay } = req.body || {};
+    const { pdfBase64, guestNames, dateOfStay, howFoundUs } = req.body || {};
     const names = clean(guestNames) || 'Guest';
     const stayDate = clean(dateOfStay) || 'Not provided';
+    const discoverySource = clean(howFoundUs) || 'Not provided';
 
     if (typeof pdfBase64 !== 'string' || pdfBase64.length < 100) {
       return res.status(400).json({ error: 'A signed agreement PDF is required' });
@@ -51,7 +52,7 @@ export default async function handler(req, res) {
         from: process.env.AGREEMENT_EMAIL_FROM || DEFAULT_FROM,
         to: [process.env.AGREEMENT_EMAIL_TO || DEFAULT_TO],
         subject: `Signed Guest Agreement - ${names}`,
-        html: `<h2>New signed guest agreement</h2><p><strong>Guest:</strong> ${escapeHtml(names)}</p><p><strong>Date of stay:</strong> ${escapeHtml(stayDate)}</p><p>The signed agreement is attached as a PDF.</p>`,
+        html: `<h2>New signed guest agreement</h2><p><strong>Guest:</strong> ${escapeHtml(names)}</p><p><strong>Date of stay:</strong> ${escapeHtml(stayDate)}</p><p><strong>How they found us:</strong> ${escapeHtml(discoverySource)}</p><p>The signed agreement is attached as a PDF.</p>`,
         attachments: [{
           filename: `Waterfront-Retreat-Guest-Agreement-${names.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'Guest'}.pdf`,
           content: pdfBase64

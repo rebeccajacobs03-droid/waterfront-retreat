@@ -50,6 +50,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <label>Are you celebrating a special occasion?</label>
 <div class="radio-row"><label class="radio-opt"><input type="radio" name="special_occasion" value="Yes"> Yes</label><label class="radio-opt"><input type="radio" name="special_occasion" value="No" checked> No</label></div>
 <label>If yes, what are you celebrating? <span class="hint">(Anniversary, birthday, engagement, honeymoon, babymoon, etc.)</span><input type="text" name="occasion_detail" placeholder="Optional"></label>
+<label>How did you find us?
+<select name="how_found_us" required>
+<option value="" selected disabled>Please choose one</option>
+<option value="Facebook">Facebook</option>
+<option value="Instagram">Instagram</option>
+<option value="TikTok">TikTok</option>
+<option value="Google">Google</option>
+<option value="Airbnb">Airbnb</option>
+<option value="Vrbo">Vrbo</option>
+<option value="Friend or family">Friend or family</option>
+<option value="Returning guest">Returning guest</option>
+<option value="Other">Other</option>
+</select></label>
 </section>
 
 <section class="legal-card">
@@ -133,11 +146,13 @@ function buildPDF(){
   const dateOfStay = document.querySelector('[name=date_of_stay]').value || '-';
   const occasionYes = document.querySelector('[name=special_occasion][value=Yes]').checked;
   const occasionDetail = document.querySelector('[name=occasion_detail]').value || '-';
+  const howFoundUs = document.querySelector('[name=how_found_us]').value || '-';
 
   addParagraph('TRIP DETAILS', { bold: true, size: 12, after: 8 });
   addParagraph('Guest name(s): ' + guestNames);
   addParagraph('Date of stay: ' + dateOfStay);
-  addParagraph('Special occasion: ' + (occasionYes ? ('Yes - ' + occasionDetail) : 'No'), { after: 16 });
+  addParagraph('Special occasion: ' + (occasionYes ? ('Yes - ' + occasionDetail) : 'No'));
+  addParagraph('How did you find us?: ' + howFoundUs, { after: 16 });
 
   AGREEMENT_BLOCKS.forEach(function(block){
     const tag = block[0], val = block[1];
@@ -216,6 +231,7 @@ document.getElementById('guest-form').addEventListener('submit', async function(
     const pdfBase64 = lastPDF.output('datauristring').split(',')[1];
     const guestNames = document.querySelector('[name=guest_names]').value || '';
     const dateOfStay = document.querySelector('[name=date_of_stay]').value || '';
+    const howFoundUs = document.querySelector('[name=how_found_us]').value || '';
 
     const formspreeSubmit = fetch(form.action, {
       method: 'POST',
@@ -232,7 +248,8 @@ document.getElementById('guest-form').addEventListener('submit', async function(
     const delivery = await sendAgreementEmail({
       pdfBase64: pdfBase64,
       guestNames: guestNames,
-      dateOfStay: dateOfStay
+      dateOfStay: dateOfStay,
+      howFoundUs: howFoundUs
     });
 
     formspreeSubmit.catch(function(){});
