@@ -16,9 +16,26 @@ const chooser=document.querySelector("#chooser-grid");
 if(chooser)chooser.innerHTML=Object.entries(cabins).map(([slug,c])=>`<a class="chooser-card" href="cabin.html?c=${slug}"><img src="${c.card}" alt="${c.name}"><div class="chooser-shade"></div><span class="chooser-number">${c.number}</span><div class="chooser-copy"><p>${c.tagline}</p><h2>${c.name}</h2><span>${c.intro}</span><strong>Explore this cabin →</strong></div></a>`).join("");
 const lake=document.querySelector("#lake-gallery");
 if(lake){const pics=[["pickwick-lake.webp","Pickwick Lake"],["candlelight-hot-tub.webp","Candlelit soaks"],["lawn-lights.webp","Evenings on the lawn"],["sunset-seating.webp","Sunset by the water"],["hot-tub-evening.webp","Private evenings"],["fire-pit.webp","Fireside moments"],["heron.webp","Quiet wildlife"],["evening-entrance.webp","A warm welcome"],["lakeside-sunrise.webp","Slow mornings"],["starlit-drive.webp","Nights under the stars"]];lake.innerHTML=pics.map((p,i)=>`<figure class="${i<2?"lake-life-feature":""}"><img src="images/life-at-lake/${p[0]}" alt="${p[1]}" loading="lazy"><figcaption>${p[1]}</figcaption></figure>`).join("")}
+
+const experienceCarousel=document.querySelector("[data-experience-carousel]");
+if(experienceCarousel){
+const track=experienceCarousel.querySelector(".experience-track"),cards=[...track.children],dots=document.querySelector(".carousel-dots");
+let pageIndex=0;
+const pageSize=()=>matchMedia("(max-width: 700px)").matches?1:matchMedia("(max-width: 1000px)").matches?2:3;
+const pageCount=()=>Math.ceil(cards.length/pageSize());
+const renderDots=()=>{dots.innerHTML=Array.from({length:pageCount()},(_,i)=>`<button type="button" aria-label="Show guest experiences ${i+1}" class="${i===pageIndex?'active':''}"></button>`).join("");};
+const goTo=i=>{pageIndex=(i+pageCount())%pageCount();const card=cards[pageIndex*pageSize()];track.scrollTo({left:card?card.offsetLeft:0,behavior:"smooth"});renderDots();};
+experienceCarousel.querySelector(".previous").addEventListener("click",()=>goTo(pageIndex-1));
+experienceCarousel.querySelector(".next").addEventListener("click",()=>goTo(pageIndex+1));
+dots.addEventListener("click",e=>{const buttons=[...dots.children],i=buttons.indexOf(e.target);if(i>-1)goTo(i);});
+addEventListener("resize",()=>{pageIndex=0;goTo(0);});renderDots();
+}
+
+const experienceFilters=document.querySelector(".experience-filters");
+if(experienceFilters){experienceFilters.addEventListener("click",e=>{if(!e.target.matches("button"))return;experienceFilters.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b===e.target));document.querySelectorAll(".guest-story").forEach(card=>card.hidden=e.target.dataset.filter!=="all"&&card.dataset.cabin!==e.target.dataset.filter);});}
 const page=document.querySelector("#cabin-page");
 if(page){const key=new URLSearchParams(location.search).get("c")||"blue-heron",c=cabins[key]||cabins["blue-heron"];document.title=`${c.name} | Waterfront Retreat`;page.innerHTML=`
-<header class="detail-header"><a class="brand" href="./"><b>Waterfront Retreat</b><span>on Pickwick Lake</span></a><nav><a href="cabins.html">All cabins</a><a href="faq.html">FAQ</a><a href="./#contact">Contact</a><a class="nav-book" href="${booking}">Book now</a></nav></header>
+<header class="detail-header"><a class="brand" href="./"><b>Waterfront Retreat</b><span>on Pickwick Lake</span></a><nav><a href="cabins.html">All cabins</a><a href="faq.html">FAQ</a><a href="guest-experiences.html">Reviews</a><a href="./#contact">Contact</a><a class="nav-book" href="${booking}">Book now</a></nav></header>
 <section class="detail-hero"><img src="${c.hero}" alt="${c.name}"><div class="overlay"></div><div class="detail-title"><p class="kicker light">${c.tagline}</p><h1>${c.name}</h1><p>${c.intro}</p></div></section>
 <section class="detail-intro"><div><p class="kicker">Your private retreat</p><h2>${c.intro}</h2><p>${c.copy}</p><a class="btn gold" href="${booking}">Check dates & book</a><a class="faq-link" href="faq.html">Questions before you book? View our FAQs &rarr;</a></div><aside><span>Cabin highlight</span><strong>${c.highlight}</strong><div class="detail-meta"><span>1 bedroom</span><span>1 bathroom</span><span>2 adults</span></div></aside></section>
 <section class="cabin-gallery"><div class="gallery-heading"><div><p class="kicker">Step inside</p><h2>Explore ${c.name}</h2></div><p>Take a closer look at your private cabin and peaceful outdoor spaces.</p></div><div class="gallery-grid">${c.gallery.map((src,i)=>`<figure class="${i===0||i===4?"gallery-feature":""}"><img src="${src}" alt="${c.name}" loading="lazy"></figure>`).join("")}</div></section>
