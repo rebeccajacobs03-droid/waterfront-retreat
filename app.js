@@ -1,7 +1,7 @@
 const booking="https://waterfront-retreat-direct-booking.guestybookings.com/en";
 const amenities=[
 ["◌","Comfort",["Air conditioning","Heating","Private hot tub","Hot water","Wi-Fi","TV","Bed linens","Hair dryer"]],
-["⌂","Kitchen & Dining",["Keurig coffee maker","Coffee, cream & sugar provided","Kitchenette","Mini fridge","Toaster","Air fryer","Basic cooking utensils","Dishes & silverware","Wine glasses","BBQ grill & utensils"]],
+["⌂","Kitchen & Dining",["Keurig coffee maker","Coffee, cream & sugar provided","Mini fridge","Toaster","Air fryer","Basic cooking utensils","Dishes & silverware","Wine glasses","Blackstone griddle & utensils"]],
 ["≈","Outdoor & Lake",["Waterfront","Lake access","Kayaks","Paddle boat","Private fire pit on your deck","Shared fire pit by the lake","Outdoor shower","Outdoor dining","Outdoor furniture","Private patio or balcony"]],
 ["✓","Safety & Essentials",["Private entrance","Private living room","Free parking","Single-level home","Smoke alarm","Fire extinguisher","First aid kit","Life jackets provided","Board games","Bath essentials (shampoo, conditioner, body wash, hand soap & dish soap)"]]
 ];
