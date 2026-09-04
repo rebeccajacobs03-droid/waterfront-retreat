@@ -25,4 +25,30 @@
 <section class="experience-cta"><p class="kicker light">Ready for your own story?</p><h2>Your lake escape is waiting.</h2><p>Choose your cabin and reserve your peaceful getaway for two.</p><a class="btn gold" href="https://waterfront-retreat-direct-booking.guestybookings.com/en">Check availability</a></section>
 </main>
 <footer id="contact"><div class="brand"><b>Waterfront Retreat</b><span>on Pickwick Lake</span></div><p>Private waterfront cabins for couples ages 25 and up in Cherokee, Alabama.</p><div class="links"><a href="tel:+12563351827">256-335-1827</a><a href="mailto:info@waterfrontretreatonpickwicklake.com">info@waterfrontretreatonpickwicklake.com</a><a href="faq.html">FAQ</a></div><small>&copy; 2026 Waterfront Retreat on Pickwick Lake</small></footer>
+<style>.guest-story:not(.featured)>img{width:calc(100% + 56px);height:230px;object-fit:cover;margin:-28px -28px 26px}</style>
+<script>
+const guestStoryPhotos = [
+  null,
+  ["images/guest-experiences/butterfly-bungalow.webp", "Butterfly Bungalow at Waterfront Retreat"],
+  ["images/guest-experiences/eagles-nest.webp", "Eagle's Nest cabin at Waterfront Retreat"],
+  ["images/blue-heron-gallery/hot-tub-deck.jpg", "Private hot tub deck at Blue Heron"],
+  ["images/life-at-lake/sunset-seating.webp", "Waterfront seating at sunset"],
+  ["images/life-at-lake/evening-entrance.webp", "A warmly lit cabin entrance in the evening"],
+  ["images/life-at-lake/lakeside-sunrise.webp", "Sunrise over the water at Waterfront Retreat"],
+  ["images/eagles-nest-gallery/cabin-interior.jpeg", "Cozy interior of Eagle's Nest"],
+  ["images/life-at-lake/pickwick-lake.webp", "Peaceful view across Pickwick Lake"],
+  ["images/life-at-lake/candlelight-hot-tub.webp", "Private hot tub glowing by candlelight"],
+  ["images/butterfly-bungalow-gallery/lake-view.jpeg", "Lake view from Butterfly Bungalow"],
+  ["images/life-at-lake/fire-pit.webp", "Waterfront fire pit at Waterfront Retreat"]
+];
+document.querySelectorAll(".guest-story").forEach((story, index) => {
+  const photo = guestStoryPhotos[index];
+  if (!photo) return;
+  const image = document.createElement("img");
+  image.src = photo[0];
+  image.alt = photo[1];
+  image.loading = "lazy";
+  story.prepend(image);
+});
+</script>
 <script src="app.js"></script></body></html>
